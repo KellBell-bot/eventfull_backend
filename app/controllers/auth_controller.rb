@@ -1,26 +1,23 @@
 class AuthController < ApplicationController
     
     def login
-        user = User.find_by(username: login_params[:username])
-        if user && user.authenticate(login_params[:password])
-             token = JWT.encode({user_id: user.id}, secret, 'HS256')
-            render json: {user: user, token: token}
+        user = User.find_by(username: params[:username])
+        if user && user.authenticate(params[:password])
+             payload={user_id: user.id}
+             token = JWT.encode(payload, 'secret')
+            render json: {user: user, jwt: token, success: "Welcome back, #{user.username}"}
         else
-            render json: {errors: user.errors.full_messages}
+            render json: {failure: "Log in failed. Username or password invalid."}
         end
     end
 
-    def persist
-        if request.headers['Authorization']
-            encoded_token = request.headers['Authorization'].split(' ')[1]
-            token = JWT.decode(encoded_token, secret)
-            user_id = token[0]['user_id']
-            user = User.find(user_id)
-            render json: user
+   def auto_login
+        if session_user
+            render json: session_user
+        else
+            render json: [errors: "No user Logged In"]
         end
     end
-
-    private
 
     def login_params
         params.permit(:username, :password)
