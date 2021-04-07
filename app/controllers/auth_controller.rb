@@ -11,16 +11,25 @@ class AuthController < ApplicationController
         end
     end
 
-   def auto_login
-        if session_user
-            render json: session_user
+
+
+
+    def auto_login
+        if request.headers["Authorization"]
+            encoded_token = request.headers["Authorization"].split(' ')[1]
+            decoded_hash= JWT.encode(encoded_token, 'secret')
+            user_id = decoded_hash[0]['user_id']
+            user = User.find_by(id: user_id )
+            render json: user
         else
-            render json: [errors: "No user Logged In"]
+            nil
         end
     end
 
+        
+    private    
     def login_params
-        params.permit(:username, :password)
+            params.permit(:username, :password)
     end
 
 end
