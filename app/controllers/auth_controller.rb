@@ -17,12 +17,13 @@ class AuthController < ApplicationController
     def auto_login
         if request.headers["Authorization"]
             encoded_token = request.headers["Authorization"].split(' ')[1]
-            decoded_hash= JWT.encode(encoded_token, 'secret')
+            decoded_hash= JWT.decode(encoded_token, 'secret')
             user_id = decoded_hash[0]['user_id']
-            user = User.find_by(id: user_id )
-            render json: user
+            user = User.find_by(id: user_id)
+            render json: {user: user, success: "Hi #{user.username}"}
         else
-            nil
+            byebug
+            render json: {failure: "Auto login failed"}
         end
     end
 
