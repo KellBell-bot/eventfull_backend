@@ -9,3 +9,4 @@ User.destroy_all
 user1 = User.create(full_name: "Luke James", username: "test", password: "test")
 
 
+event1= user1.events.create(title: "Thinkful Webinar | UX/UI Design: Creating a Design System", link:"https://www.eventbrite.com/e/thinkful-webinar-uxui-design-creating-a-design-system-tickets-149797501359?aff=ebdssbcitybrowse", date_field: Date.new(2021,05,03), fee: false)
