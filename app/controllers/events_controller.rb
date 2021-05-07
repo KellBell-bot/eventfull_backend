@@ -1,7 +1,8 @@
 class EventsController < ApplicationController
 
     def index 
-        events= Event.all
+        # user_id => from jwt
+        events= User.find(user).events
         render json: events
     end
 

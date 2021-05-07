@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 
     def index
         users= User.all
-        render json: users
+        render json: users, include: :events
     end
 
     def show
@@ -15,8 +15,7 @@ class UsersController < ApplicationController
         if user.valid?
             payload={user_id: user.id}
             token = JWT.encode(payload, 'secret')
-            render json: {user: user, jwt: token}
-        else
+            render json: {user: user, jwt: token} 
             render json: {error: user.errors.full_messages}, status: :not_acceptable
         end
     end
@@ -35,6 +34,6 @@ class UsersController < ApplicationController
     private
 
     def user_params
-        params.require(:user).permit(:full_name, :username, :password)
+        params.permit(:full_name, :username, :password, relationships: [:events])
     end
 end

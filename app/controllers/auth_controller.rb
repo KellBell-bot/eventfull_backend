@@ -20,7 +20,7 @@ class AuthController < ApplicationController
             decoded_hash= JWT.decode(encoded_token, 'secret')
             user_id = decoded_hash[0]['user_id']
             user = User.find_by(id: user_id)
-            render json: {user: user, success: "Hi #{user.username}"}
+            render json: {user: user, events: user.events, success: "Hi #{user.username}"}
         else
             byebug
             render json: {failure: "Auto login failed"}
@@ -30,7 +30,7 @@ class AuthController < ApplicationController
         
     private    
     def login_params
-            params.permit(:username, :password)
+            params.permit(:username, :password, relationships: [:events])
     end
 
 end
